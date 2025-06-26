@@ -32,6 +32,21 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={cn(fontBody.variable, fontHeadline.variable)}>
       <head />
       <body className={cn("font-body antialiased")}>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                  for(let registration of registrations) {
+                    registration.unregister();
+                  }
+                }).catch(function(err) {
+                  console.log('Service Worker unregistration failed: ', err);
+                });
+              }
+            `,
+          }}
+        />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
