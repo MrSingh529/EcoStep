@@ -8,8 +8,6 @@ import { calculateDailyImpact, calculateWeeklyImpact, calculateMonthlyImpact, ca
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Info } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
-import { getActivities } from "@/lib/firestore-service";
 
 type SummaryCardData = {
   title: string;
@@ -20,92 +18,80 @@ type SummaryCardData = {
   icon: React.ElementType;
 };
 
-export function ImpactSummaryCards() {
+interface ImpactSummaryCardsProps {
+    activities: ActivityData[];
+}
+
+export function ImpactSummaryCards({ activities }: ImpactSummaryCardsProps) {
   const [summaryData, setSummaryData] = useState<SummaryCardData[] | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const { user } = useAuth();
 
   useEffect(() => {
-    if (!user) return;
-
-    const fetchActivities = async () => {
-      try {
-        const storedActivities = await getActivities(user.uid);
-        
-        if (storedActivities.length > 0) {
-          const latestActivity = storedActivities[storedActivities.length - 1];
-          
-          const currentDaily = calculateDailyImpact(latestActivity);
-          const currentWeekly = calculateWeeklyImpact(latestActivity);
-          const currentMonthly = calculateMonthlyImpact(latestActivity);
-          const savings = calculateSavings(latestActivity);
-          
-          let previousDaily: ImpactData | null = null;
-          if (storedActivities.length > 1) {
-            const previousActivity = storedActivities[storedActivities.length - 2];
-            previousDaily = calculateDailyImpact(previousActivity);
-          }
-          
-          const getChange = (current: number, previous: number | undefined | null) => {
-            if (previous === undefined || previous === null || current === previous) return { change: "N/A", changeType: "positive" as const };
-            const diff = ((current - previous) / Math.abs(previous)) * 100;
-             if (Math.abs(diff) < 1) return { change: "N/A", changeType: "positive" as const };
-            return {
-              change: `${diff > 0 ? '+' : ''}${Math.round(diff)}%`,
-              changeType: diff <= 0 ? "positive" : "negative" as const
-            }
-          }
-
-          const data: SummaryCardData[] = [
-            {
-              title: "Today's Footprint",
-              value: `${currentDaily.total} kg`,
-              ...getChange(currentDaily.total, previousDaily?.total),
-              description: "CO2e vs last entry",
-              icon: Footprints,
-            },
-          ];
-          
-          if (savings > 0) {
-            data.push({
-              title: "Emissions Saved Today",
-              value: `${savings} kg`,
-              description: "By using sustainable transport",
-              icon: ShieldCheck,
-            });
-          }
-
-          data.push(
-              {
-                title: "Weekly Footprint",
-                value: `${currentWeekly.total} kg`,
-                description: "Est. CO2e this week",
-                icon: CalendarDays,
-              },
-              {
-                title: "Monthly Footprint",
-                value: `${currentMonthly.total} kg`,
-                description: "Est. CO2e this month",
-                icon: Calendar,
-              }
-          )
-          
-          setSummaryData(data);
-        } else {
-          setSummaryData([]);
-        }
-      } catch (error) {
-        console.error("Failed to load or parse activity data", error);
-        setSummaryData([]);
-      } finally {
-        setIsLoading(false);
+    if (activities.length > 0) {
+      const latestActivity = activities[activities.length - 1];
+      
+      const currentDaily = calculateDailyImpact(latestActivity);
+      const currentWeekly = calculateWeeklyImpact(latestActivity);
+      const currentMonthly = calculateMonthlyImpact(latestActivity);
+      const savings = calculateSavings(latestActivity);
+      
+      let previousDaily: ImpactData | null = null;
+      if (activities.length > 1) {
+        const previousActivity = activities[activities.length - 2];
+        previousDaily = calculateDailyImpact(previousActivity);
       }
-    };
+      
+      const getChange = (current: number, previous: number | undefined | null) => {
+        if (previous === undefined || previous === null || current === previous) return { change: "N/A", changeType: "positive" as const };
+        const diff = ((current - previous) / Math.abs(previous)) * 100;
+          if (Math.abs(diff) < 1) return { change: "N/A", changeType: "positive" as const };
+        return {
+          change: `${diff > 0 ? '+' : ''}${Math.round(diff)}%`,
+          changeType: diff <= 0 ? "positive" : "negative" as const
+        }
+      }
 
-    fetchActivities();
-  }, [user]);
+      const data: SummaryCardData[] = [
+        {
+          title: "Today's Footprint",
+          value: `${currentDaily.total} kg`,
+          ...getChange(currentDaily.total, previousDaily?.total),
+          description: "CO2e vs last entry",
+          icon: Footprints,
+        },
+      ];
+      
+      if (savings > 0) {
+        data.push({
+          title: "Emissions Saved Today",
+          value: `${savings} kg`,
+          description: "By using sustainable transport",
+          icon: ShieldCheck,
+        });
+      }
 
-  if (isLoading) {
+      data.push(
+          {
+            title: "Weekly Footprint",
+            value: `${currentWeekly.total} kg`,
+            description: "Est. CO2e this week",
+            icon: CalendarDays,
+          },
+          {
+            title: "Monthly Footprint",
+            value: `${currentMonthly.total} kg`,
+            description: "Est. CO2e this month",
+            icon: Calendar,
+          }
+      )
+      
+      setSummaryData(data);
+    } else {
+      setSummaryData([]);
+    }
+  }, [activities]);
+
+
+  if (!summaryData) {
     return (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {Array.from({ length: 4 }).map((_, i) => (
@@ -124,7 +110,7 @@ export function ImpactSummaryCards() {
     )
   }
 
-  if (!summaryData || summaryData.length === 0) {
+  if (summaryData.length === 0) {
     return (
         <Card>
             <CardHeader>

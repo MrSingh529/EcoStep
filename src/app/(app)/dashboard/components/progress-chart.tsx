@@ -8,42 +8,27 @@ import { calculateMonthlyImpact, ActivityData } from "@/lib/calculations";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Info } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
-import { getActivities } from "@/lib/firestore-service";
 
+interface ProgressChartProps {
+    activities: ActivityData[];
+}
 
-export function ProgressChart() {
+export function ProgressChart({ activities }: ProgressChartProps) {
   const [chartData, setChartData] = useState<any[] | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const { user } = useAuth();
-  
-  useEffect(() => {
-    if (!user) return;
-    
-    const fetchChartData = async () => {
-      try {
-        const storedActivities = await getActivities(user.uid);
-        
-        if (storedActivities.length > 0) {
-          const data = storedActivities.map(activity => ({
-            month: format(new Date(activity.date), "MMM d"),
-            footprint: calculateMonthlyImpact(activity).total,
-          }));
-          setChartData(data);
-        } else {
-          setChartData([]);
-        }
-      } catch (error) {
-        console.error("Failed to load chart data", error);
-        setChartData([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchChartData();
-  }, [user]);
 
-  if (isLoading) {
+  useEffect(() => {
+    if (activities.length > 0) {
+      const data = activities.map(activity => ({
+        month: format(new Date(activity.date), "MMM d"),
+        footprint: calculateMonthlyImpact(activity).total,
+      }));
+      setChartData(data);
+    } else {
+      setChartData([]);
+    }
+  }, [activities]);
+
+  if (!chartData) {
     return (
       <Card>
         <CardHeader>
@@ -57,19 +42,19 @@ export function ProgressChart() {
     );
   }
 
-  if (!chartData || chartData.length === 0) {
+  if (chartData.length === 0) {
     return (
         <Card>
             <CardHeader>
                 <CardTitle>Footprint Trend</CardTitle>
                 <CardDescription>Your estimated monthly carbon footprint (in kg CO2e) over time.</CardDescription>
             </CardHeader>
-            <CardContent>
-                <Alert>
+            <CardContent className="flex items-center justify-center h-[350px]">
+                <Alert className="max-w-md">
                   <Info className="h-4 w-4" />
                   <AlertTitle>Not Enough Data</AlertTitle>
                   <AlertDescription>
-                    Log activities over time to see your progress trend here.
+                    No activities logged in the selected date range. Choose a different range to see your trend.
                   </AlertDescription>
                 </Alert>
             </CardContent>
@@ -81,7 +66,7 @@ export function ProgressChart() {
     <Card>
       <CardHeader>
         <CardTitle>Footprint Trend</CardTitle>
-        <CardDescription>Your estimated monthly carbon footprint (in kg CO2e) over time.</CardDescription>
+        <CardDescription>Your estimated monthly carbon footprint (in kg CO2e) over time for the selected period.</CardDescription>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={350}>
