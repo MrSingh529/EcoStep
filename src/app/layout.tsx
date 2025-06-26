@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import { Inter, Caveat } from "next/font/google";
 import "./globals.css";
@@ -21,9 +22,6 @@ export const metadata: Metadata = {
   title: "EcoStep",
   description: "Understand and Reduce Your Environmental Impact.",
   manifest: "/manifest.json",
-  icons: {
-    apple: "https://placehold.co/180x180.png",
-  },
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#f2f0e8' },
     { media: '(prefers-color-scheme: dark)', color: '#121829' },
