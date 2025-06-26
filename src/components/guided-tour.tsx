@@ -2,7 +2,12 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
-import Joyride, { Step, CallBackProps, STATUS } from 'react-joyride';
+import dynamic from 'next/dynamic';
+import type { Step, CallBackProps } from 'react-joyride';
+import { STATUS } from 'react-joyride';
+
+// Dynamically import Joyride only on the client side
+const Joyride = dynamic(() => import('react-joyride'), { ssr: false });
 
 export function GuidedTour() {
   const [run, setRun] = useState(false);
@@ -70,6 +75,7 @@ export function GuidedTour() {
     }
   }, []);
 
+  // Only render Joyride on the client
   if (!isClient) return null;
 
   return (
