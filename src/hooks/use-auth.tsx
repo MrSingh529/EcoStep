@@ -1,3 +1,4 @@
+
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
@@ -27,6 +28,7 @@ export interface User extends FirebaseUser {
   xp?: number;
   dailyStreak?: number;
   joinedChallenges?: string[];
+  avatarId?: string;
 }
 
 interface AuthContextType {
@@ -73,6 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             xp: 0,
             dailyStreak: 0,
             joinedChallenges: [],
+            avatarId: "sprout",
           };
           await setOrMergeUserProfile(firebaseUser.uid, newUserProfile);
           setUser({ ...firebaseUser, ...newUserProfile });
@@ -114,6 +117,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         xp: 0,
         dailyStreak: 0,
         joinedChallenges: [],
+        avatarId: "sprout",
     };
     await setOrMergeUserProfile(userCredential.user.uid, newUserProfile);
     setUser({ ...userCredential.user, ...newUserProfile });

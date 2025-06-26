@@ -1,3 +1,4 @@
+
 import { db } from '@/lib/firebase';
 import { collection, addDoc, getDocs, query, orderBy, Timestamp, doc, getDoc, setDoc, updateDoc, writeBatch, limit, arrayUnion } from 'firebase/firestore';
 import { differenceInCalendarDays } from 'date-fns';
@@ -25,6 +26,7 @@ export interface UserProfile {
     dailyStreak: number;
     lastActivityDate?: string;
     joinedChallenges?: string[];
+    avatarId?: string;
 }
 
 const XP_PER_LOG = 25;
@@ -45,6 +47,7 @@ export async function setOrMergeUserProfile(userId: string, data: Partial<Omit<U
         xp: data.xp || 0,
         dailyStreak: data.dailyStreak || 0,
         joinedChallenges: data.joinedChallenges || [],
+        avatarId: data.avatarId || "sprout",
     }
     await setDoc(userDocRef, profileData, { merge: true });
 }

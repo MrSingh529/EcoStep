@@ -13,6 +13,8 @@ import { Label } from "@/components/ui/label";
 import { Loader2, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { avatars } from "@/components/avatars";
+import { cn } from "@/lib/utils";
 
 const profileSchema = z.object({
   displayName: z.string().min(2, { message: "Name must be at least 2 characters." }).optional(),
@@ -20,6 +22,7 @@ const profileSchema = z.object({
   currency: z.string().optional(),
   gender: z.enum(["male", "female", "other", "prefer_not_to_say"]).optional(),
   birthYear: z.coerce.number().min(1920).max(new Date().getFullYear()).optional(),
+  avatarId: z.string().optional(),
 });
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
@@ -37,6 +40,7 @@ export function ProfileForm() {
       currency: user?.currency || "",
       gender: user?.gender as any || undefined,
       birthYear: user?.birthYear || undefined,
+      avatarId: user?.avatarId || "sprout",
     },
   });
 
@@ -74,6 +78,32 @@ export function ProfileForm() {
             <CardDescription>This information may be used to personalize your experience.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
+            <FormField
+              control={form.control}
+              name="avatarId"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>Your Eco-Avatar</FormLabel>
+                  <FormControl>
+                    <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="grid grid-cols-3 md:grid-cols-5 gap-4">
+                      {Object.entries(avatars).map(([id, { component: Icon, label }]) => (
+                        <FormItem key={id}>
+                          <FormControl>
+                            <RadioGroupItem value={id} id={`profile-${id}`} className="sr-only" />
+                          </FormControl>
+                          <Label htmlFor={`profile-${id}`} className={cn("flex flex-col items-center justify-center gap-2 rounded-lg border-2 p-3 cursor-pointer hover:bg-accent hover:text-accent-foreground", field.value === id && "border-primary bg-primary/10")}>
+                            <Icon className="w-16 h-16" />
+                            <span className="text-xs font-semibold">{label}</span>
+                          </Label>
+                        </FormItem>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage className="text-center" />
+                </FormItem>
+              )}
+            />
+            
             <FormField
               control={form.control}
               name="displayName"

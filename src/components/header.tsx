@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/use-auth";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,6 +38,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { avatars } from "@/components/avatars";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -75,23 +76,19 @@ export function Header() {
   
   const UserMenu = () => {
     if (!user) return null;
-
-    const getInitials = (name: string | null | undefined) => {
-        if (!name) return 'U';
-        const names = name.split(' ');
-        if (names.length > 1) {
-            return (names[0][0] + names[names.length - 1][0]).toUpperCase();
-        }
-        return names[0].substring(0, 2).toUpperCase();
-    }
+    
+    const AvatarComponent = user.avatarId ? avatars[user.avatarId]?.component : null;
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                    <Avatar className="h-8 w-8">
-                        <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
-                        <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                    <Avatar className="h-10 w-10">
+                        {AvatarComponent ? (
+                            <AvatarComponent />
+                        ) : (
+                           <AvatarFallback>{user.displayName?.charAt(0).toUpperCase() || 'U'}</AvatarFallback>
+                        )}
                     </Avatar>
                 </Button>
             </DropdownMenuTrigger>
