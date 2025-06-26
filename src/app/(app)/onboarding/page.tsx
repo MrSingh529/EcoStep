@@ -19,8 +19,6 @@ import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { avatars } from "@/components/avatars";
 
-const TOTAL_STEPS = 3;
-
 const questions = [
   {
     id: "flights", text: "How many round-trip flights did you take in the last year?",
@@ -69,22 +67,20 @@ const questions = [
   },
 ];
 
-const profileSchema = z.object({
-  displayName: z.string().min(2, "Name must be at least 2 characters."),
-  country: z.string().min(2, "Please enter your country."),
-});
-const avatarSchema = z.object({
-  avatarId: z.string({ required_error: "Please select an avatar." }),
-});
-const questionnaireSchema = z.object({
-  flights: z.string().nonempty({ message: "Please select an option." }),
-  carTravel: z.string().nonempty({ message: "Please select an option." }),
-  diet: z.string().nonempty({ message: "Please select an option." }),
-  energyUsage: z.string().nonempty({ message: "Please select an option." }),
-  onlineShopping: z.string().nonempty({ message: "Please select an option." }),
+const TOTAL_STEPS = 2 + questions.length;
+
+const fullSchema = z.object({
+    displayName: z.string().min(2, "Name must be at least 2 characters."),
+    country: z.string().min(2, "Please enter your country."),
+    avatarId: z.string({ required_error: "Please select an avatar." }),
+    flights: z.string().nonempty({ message: "Please select an option." }),
+    carTravel: z.string().nonempty({ message: "Please select an option." }),
+    diet: z.string().nonempty({ message: "Please select an option." }),
+    energyUsage: z.string().nonempty({ message: "Please select an option." }),
+    onlineShopping: z.string().nonempty({ message: "Please select an option." }),
 });
 
-const formSchemas = [profileSchema, avatarSchema, questionnaireSchema];
+type OnboardingFormValues = z.infer<typeof fullSchema>;
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -92,8 +88,8 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const form = useForm({
-    resolver: zodResolver(formSchemas[step]),
+  const form = useForm<OnboardingFormValues>({
+    resolver: zodResolver(fullSchema),
     defaultValues: {
       displayName: user?.displayName || "",
       country: user?.country || "",
@@ -103,14 +99,24 @@ export default function OnboardingPage() {
   });
 
   const goNext = async () => {
-    const isValid = await form.trigger();
+    let fieldsToValidate: (keyof OnboardingFormValues)[];
+    if (step === 0) {
+      fieldsToValidate = ['displayName', 'country'];
+    } else if (step === 1) {
+      fieldsToValidate = ['avatarId'];
+    } else {
+      const questionId = questions[step - 2].id as keyof OnboardingFormValues;
+      fieldsToValidate = [questionId];
+    }
+
+    const isValid = await form.trigger(fieldsToValidate);
     if (isValid) {
       setStep((prev) => prev + 1);
     }
   };
   const goBack = () => setStep((prev) => prev - 1);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: OnboardingFormValues) => {
     if (!user) return;
     setIsSubmitting(true);
 
@@ -124,7 +130,7 @@ export default function OnboardingPage() {
     }
     
     const finalData = {
-      ...form.getValues(),
+      ...data,
       onboardingCompleted: true,
       baselineCo2: totalCo2,
     };
@@ -154,14 +160,19 @@ export default function OnboardingPage() {
 
         <Card>
           <CardHeader>
-            <Progress value={((step + 1) / TOTAL_STEPS) * 100} className="h-2" />
+            <Progress value={((step) / (TOTAL_STEPS - 1)) * 100} className="h-2" />
           </CardHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <CardContent className="min-h-[400px] flex flex-col justify-center">
                 {step === 0 && <StepProfile form={form} />}
                 {step === 1 && <StepAvatar form={form} />}
-                {step === 2 && <StepQuestionnaire form={form} />}
+                {step >= 2 && step < TOTAL_STEPS && (
+                    <StepSingleQuestion 
+                        form={form} 
+                        question={questions[step - 2]}
+                    />
+                )}
               </CardContent>
 
               <CardFooter className="justify-between">
@@ -251,34 +262,30 @@ const StepAvatar = ({ form }: { form: any }) => (
   </div>
 );
 
-const StepQuestionnaire = ({ form }: { form: any }) => (
-  <div className="space-y-6 animate-in fade-in-0 duration-500">
-    <h2 className="text-xl font-semibold text-center">Estimate Your Baseline</h2>
-    <p className="text-muted-foreground text-center -mt-4">Answer a few questions about your habits from the past year.</p>
-    <div className="space-y-6 max-h-[50vh] overflow-y-auto p-2">
-      {questions.map((q) => (
+const StepSingleQuestion = ({ form, question }: { form: any; question: typeof questions[0] }) => (
+    <div className="space-y-6 animate-in fade-in-0 duration-500">
         <FormField
-          key={q.id} control={form.control} name={q.id as any}
-          render={({ field }) => (
-            <FormItem className="space-y-3">
-              <FormLabel className="font-semibold">{q.text}</FormLabel>
-              <FormControl>
-                <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {q.options.map((opt) => (
-                    <FormItem key={opt.value} className="flex items-center space-x-3 space-y-0 p-3 rounded-md border has-[:checked]:border-primary has-[:checked]:bg-primary/5 transition-all">
-                      <FormControl>
-                        <RadioGroupItem value={opt.value} id={`${q.id}-${opt.value}`} />
-                      </FormControl>
-                      <Label htmlFor={`${q.id}-${opt.value}`} className="font-normal flex-1 cursor-pointer">{opt.label}</Label>
-                    </FormItem>
-                  ))}
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+            key={question.id}
+            control={form.control}
+            name={question.id as any}
+            render={({ field }) => (
+                <FormItem className="space-y-3">
+                    <FormLabel className="font-semibold text-xl text-center block">{question.text}</FormLabel>
+                    <FormControl>
+                        <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-lg mx-auto pt-4">
+                            {question.options.map((opt) => (
+                                <FormItem key={opt.value} className="flex items-center space-x-3 space-y-0 p-3 rounded-md border has-[:checked]:border-primary has-[:checked]:bg-primary/5 transition-all">
+                                    <FormControl>
+                                        <RadioGroupItem value={opt.value} id={`${question.id}-${opt.value}`} />
+                                    </FormControl>
+                                    <Label htmlFor={`${question.id}-${opt.value}`} className="font-normal flex-1 cursor-pointer">{opt.label}</Label>
+                                </FormItem>
+                            ))}
+                        </RadioGroup>
+                    </FormControl>
+                    <FormMessage className="text-center" />
+                </FormItem>
+            )}
         />
-      ))}
     </div>
-  </div>
 );
