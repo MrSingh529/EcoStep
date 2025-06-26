@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -23,9 +24,6 @@ export default function OnboardingResultsPage() {
         if (storedName) setDisplayName(storedName);
         if (storedAvatar) setAvatarId(storedAvatar);
         
-        // Set flag to trigger the guided tour on the dashboard
-        localStorage.setItem('ecostep_guided_tour_needed', 'true');
-
         setIsLoading(false);
 
         // Clean up localStorage
