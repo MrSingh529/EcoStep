@@ -1,4 +1,6 @@
 
+'use client';
+
 import { Milestones } from "./components/milestones";
 import { DailyQuote } from "./components/daily-quote";
 import { ActivityStatus } from "./components/activity-status";
