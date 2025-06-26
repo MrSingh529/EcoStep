@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -60,7 +61,7 @@ type FormValues = z.infer<typeof formSchema>;
 export function ActivityForm() {
   const [activeTab, setActiveTab] = useState(activityCategories[0].id);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
 
@@ -91,7 +92,11 @@ export function ActivityForm() {
     }
     setIsSubmitting(true);
     try {
-      await saveActivity(user.uid, data);
+      const gamificationUpdate = await saveActivity(user.uid, data);
+
+      if (gamificationUpdate) {
+        updateUser(gamificationUpdate);
+      }
 
       toast({
         title: "Activities Saved!",

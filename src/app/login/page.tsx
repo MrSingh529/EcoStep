@@ -1,19 +1,29 @@
+
 "use client";
 
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Loader2, TriangleAlert } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -29,17 +39,24 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+const resetSchema = z.object({
+  email: z.string().email({ message: "Please enter a valid email address."}),
+});
+
+type ResetFormValues = z.infer<typeof resetSchema>;
+
 export default function LoginPage() {
   const { 
-    signInWithGoogle, 
     signInWithEmail,
     signUpWithEmail,
+    sendPasswordReset,
     user, 
     isLoading, 
     isFirebaseConfigured 
   } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
+  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
 
   const loginForm = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -50,6 +67,12 @@ export default function LoginPage() {
     resolver: zodResolver(formSchema),
     defaultValues: { email: "", password: "" },
   });
+
+  const resetForm = useForm<ResetFormValues>({
+    resolver: zodResolver(resetSchema),
+    defaultValues: { email: "" },
+  });
+
 
   useEffect(() => {
     if (user && isFirebaseConfigured) {
@@ -84,6 +107,25 @@ export default function LoginPage() {
       signUpForm.reset();
     }
   };
+  
+  const handlePasswordReset = async (data: ResetFormValues) => {
+    try {
+      await sendPasswordReset(data.email);
+      toast({
+        title: "Password Reset Email Sent",
+        description: "Please check your inbox to reset your password.",
+      });
+      setIsResetDialogOpen(false);
+      resetForm.reset();
+    } catch (error: any) {
+       toast({
+        variant: "destructive",
+        title: "Reset Failed",
+        description: "Could not send reset email. Please check the address and try again.",
+      });
+    }
+  }
+
 
   if (isLoading || (user && isFirebaseConfigured)) {
     return (
@@ -145,6 +187,39 @@ export default function LoginPage() {
                 </Button>
               </form>
             </CardContent>
+             <CardFooter className="text-sm justify-center">
+                  <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="link" size="sm" className="p-0 h-auto">Forgot Password?</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Reset Your Password</DialogTitle>
+                        <DialogDescription>
+                          Enter your email address and we'll send you a link to reset your password.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <form onSubmit={resetForm.handleSubmit(handlePasswordReset)}>
+                        <div className="space-y-4 py-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="reset-email">Email</Label>
+                            <Input
+                              id="reset-email"
+                              placeholder="m@example.com"
+                              type="email"
+                              {...resetForm.register("email")}
+                            />
+                            {resetForm.formState.errors.email && <p className="text-sm text-destructive mt-1">{resetForm.formState.errors.email.message}</p>}
+                          </div>
+                          <Button type="submit" className="w-full" disabled={resetForm.formState.isSubmitting}>
+                            {resetForm.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            Send Reset Link
+                          </Button>
+                        </div>
+                      </form>
+                    </DialogContent>
+                  </Dialog>
+                </CardFooter>
           </Card>
         </TabsContent>
         <TabsContent value="signup">

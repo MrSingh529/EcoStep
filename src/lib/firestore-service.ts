@@ -86,14 +86,16 @@ export async function getUserProfile(userId: string): Promise<Omit<UserProfile, 
  * Saves a user's activity data and updates their gamification stats.
  * @param userId The ID of the logged-in user.
  * @param activityData The activity data from the form.
+ * @returns A promise that resolves with the gamification update object.
  */
-export async function saveActivity(userId: string, activityData: Omit<ActivityData, 'date'>) {
+export async function saveActivity(userId: string, activityData: Omit<ActivityData, 'date'>): Promise<Partial<UserProfile> | null> {
     if (!db || !userId) {
         throw new Error('Firestore is not initialized or user is not logged in.');
     }
     
     const batch = writeBatch(db);
     const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize to the start of the day
 
     // 1. Add new activity document
     const activitiesRef = collection(db, 'users', userId, 'activities');
@@ -106,13 +108,16 @@ export async function saveActivity(userId: string, activityData: Omit<ActivityDa
     
     // 2. Update user profile with gamification stats
     const userRef = doc(db, 'users', userId);
-    const userProfile = await getUserProfile(userId) as UserProfile;
+    const userProfile = await getUserProfile(userId);
+
+    let profileUpdate: Partial<UserProfile> | null = null;
 
     if (userProfile) {
         // Daily Streak Logic
         const lastDate = userProfile.lastActivityDate ? new Date(userProfile.lastActivityDate) : null;
         let newStreak = userProfile.dailyStreak || 0;
         if (lastDate) {
+            lastDate.setHours(0, 0, 0, 0); // Normalize
             const daysDiff = differenceInCalendarDays(today, lastDate);
             if (daysDiff === 1) {
                 newStreak += 1; // It was yesterday, increment streak
@@ -134,7 +139,7 @@ export async function saveActivity(userId: string, activityData: Omit<ActivityDa
             newXp = newXp - requiredXp; // Reset XP for new level
         }
 
-        const profileUpdate: Partial<UserProfile> = {
+        profileUpdate = {
             xp: newXp,
             level: newLevel,
             dailyStreak: newStreak,
@@ -145,6 +150,7 @@ export async function saveActivity(userId: string, activityData: Omit<ActivityDa
 
     // Commit all changes atomically
     await batch.commit();
+    return profileUpdate;
 }
 
 /**

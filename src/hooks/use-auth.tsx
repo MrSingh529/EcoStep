@@ -11,6 +11,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
@@ -27,6 +28,7 @@ export interface User extends FirebaseUser {
   level?: number;
   xp?: number;
   dailyStreak?: number;
+  lastActivityDate?: string;
   joinedChallenges?: string[];
   avatarId?: string;
 }
@@ -37,6 +39,7 @@ interface AuthContextType {
   signInWithGoogle: () => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signUpWithEmail: (email: string, password: string) => Promise<void>;
+  sendPasswordReset: (email: string) => Promise<void>;
   signOut: () => Promise<void>;
   updateUser: (data: Partial<User>) => Promise<void>;
   joinChallenge: (challengeId: string) => Promise<void>;
@@ -69,6 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const newUserProfile = {
             email: firebaseUser.email,
             displayName: firebaseUser.displayName,
+            photoURL: firebaseUser.photoURL,
             createdAt: new Date().toISOString(),
             onboardingCompleted: false,
             level: 1,
@@ -122,6 +126,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await setOrMergeUserProfile(userCredential.user.uid, newUserProfile);
     setUser({ ...userCredential.user, ...newUserProfile });
   };
+  
+  const sendPasswordReset = async (email: string) => {
+    if (!auth) throw new Error("Firebase not configured");
+    await sendPasswordResetEmail(auth, email);
+  }
 
   const signOut = async () => {
     if (!isFirebaseConfigured) {
@@ -137,10 +146,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
   
   const updateUser = async (data: Partial<User>) => {
-    if (!user || !auth || !auth.currentUser) throw new Error("Cannot update profile: no user is signed in.");
+    if (!user || !auth) {
+      console.warn("Cannot update profile: no user is signed in.");
+      return;
+    }
     
-    // Update Firebase Auth profile if displayName is changed
-    if (data.displayName && data.displayName !== user.displayName) {
+    // If the user object in auth is available, update it.
+    if (auth.currentUser && data.displayName && data.displayName !== user.displayName) {
         await updateProfile(auth.currentUser, { displayName: data.displayName });
     }
 
@@ -167,7 +179,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   }
 
-  const value = { user, isLoading, signInWithGoogle, signInWithEmail, signUpWithEmail, signOut, updateUser, joinChallenge, isFirebaseConfigured };
+  const value = { user, isLoading, signInWithGoogle, signInWithEmail, signUpWithEmail, signOut, updateUser, joinChallenge, isFirebaseConfigured, sendPasswordReset };
 
   return (
     <AuthContext.Provider value={value}>
