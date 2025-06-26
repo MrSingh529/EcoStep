@@ -1,0 +1,48 @@
+--- a/node_modules/react-joyride/dist/index.mjs
++++ b/node_modules/react-joyride/dist/index.mjs
+@@ -1,5 +1,6 @@
+-import ReactDOM, { findDOMNode, unmountComponentAtNode, unstable_renderSubtreeIntoContainer } from 'react-dom';
++import ReactDOM, { findDOMNode } from 'react-dom';
+ import { Children, cloneElement, Component, createRef, isValidElement } from 'react';
++import { createRoot } from 'react-dom/client';
+ import PropTypes from 'prop-types';
+ import { popperGenerator } from '@popperjs/core/lib/popper-base.js';
+ import createArrow from '@popperjs/core/lib/modifiers/arrow.js';
+@@ -1016,11 +1017,14 @@
+ 
+     if (target) {
+       this.portal = document.createElement('div');
+-      target.appendChild(this.portal);
+-
+-      unstable_renderSubtreeIntoContainer(this, children, this.portal);
++      this.root = createRoot(this.portal);
++      target.appendChild(this.portal); // this is right, append the portal to the target
++
++      this.root.render(children);
+     }
+   }
++
++  
+ 
+   update(children) {
+     const {
+@@ -1030,7 +1034,7 @@
+       target,
+     } = this.props;
+ 
+-    unstable_renderSubtreeIntoContainer(this, children, this.portal);
++    this.root.render(children);
+   }
+ 
+   componentDidMount() {
+@@ -1038,7 +1042,9 @@
+   }
+ 
+   componentWillUnmount() {
+-    unmountComponentAtNode(this.portal);
++    if (this.root) {
++      this.root.unmount();
++    }
+ 
+     if (this.portal && this.portal.parentElement) {
+       this.portal.parentElement.removeChild(this.portal);
