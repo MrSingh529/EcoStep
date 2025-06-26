@@ -21,11 +21,6 @@ const fontHeadline = Caveat({
 export const metadata: Metadata = {
   title: "EcoStep",
   description: "Understand and Reduce Your Environmental Impact.",
-  manifest: "/manifest.json",
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#f2f0e8' },
-    { media: '(prefers-color-scheme: dark)', color: '#121829' },
-  ],
 };
 
 export default function RootLayout({

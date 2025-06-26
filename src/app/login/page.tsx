@@ -84,10 +84,32 @@ export default function LoginPage() {
     try {
       await signInWithEmail(data.email, data.password);
     } catch (error: any) {
+      let description = "An unknown error occurred. Please try again.";
+      if (error.code) {
+        switch (error.code) {
+          case 'auth/invalid-credential':
+          case 'auth/invalid-email':
+          case 'auth/wrong-password':
+            description = "Invalid email or password. Please check your credentials and try again.";
+            break;
+          case 'auth/user-not-found':
+            description = "No account found with this email address.";
+            break;
+          case 'auth/network-request-failed':
+            description = "Network error. Please check your internet connection.";
+            break;
+          case 'auth/invalid-api-key':
+            description = "Authentication failed. Please check your Firebase project configuration and authorized domains.";
+            break;
+          default:
+            description = `An error occurred. Please check your Firebase configuration. (Code: ${error.code})`;
+            break;
+        }
+      }
       toast({
         variant: "destructive",
         title: "Login Failed",
-        description: "Please check your email and password.",
+        description: description,
       });
       loginForm.reset();
     }
@@ -97,12 +119,26 @@ export default function LoginPage() {
     try {
       await signUpWithEmail(data.email, data.password);
     } catch (error: any) {
+      let description = "An unknown error occurred during sign-up.";
+      if (error.code) {
+        switch (error.code) {
+          case 'auth/email-already-in-use':
+            description = "An account with this email address already exists. Please try signing in.";
+            break;
+          case 'auth/weak-password':
+            description = "The password is too weak. Please choose a stronger password.";
+            break;
+          case 'auth/invalid-email':
+            description = "The email address is not valid.";
+            break;
+          default:
+            description = `An error occurred. Please check your Firebase configuration. (Code: ${error.code})`;
+        }
+      }
        toast({
         variant: "destructive",
         title: "Sign Up Failed",
-        description: error.message.includes('email-already-in-use') 
-          ? "An account with this email already exists."
-          : "An unknown error occurred.",
+        description: description,
       });
       signUpForm.reset();
     }
