@@ -77,11 +77,11 @@ const avatarSchema = z.object({
   avatarId: z.string({ required_error: "Please select an avatar." }),
 });
 const questionnaireSchema = z.object({
-  flights: z.string({ required_error: "Please select an option." }),
-  carTravel: z.string({ required_error: "Please select an option." }),
-  diet: z.string({ required_error: "Please select an option." }),
-  energyUsage: z.string({ required_error: "Please select an option." }),
-  onlineShopping: z.string({ required_error: "Please select an option." }),
+  flights: z.string().nonempty({ message: "Please select an option." }),
+  carTravel: z.string().nonempty({ message: "Please select an option." }),
+  diet: z.string().nonempty({ message: "Please select an option." }),
+  energyUsage: z.string().nonempty({ message: "Please select an option." }),
+  onlineShopping: z.string().nonempty({ message: "Please select an option." }),
 });
 
 const formSchemas = [profileSchema, avatarSchema, questionnaireSchema];
