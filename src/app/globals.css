@@ -93,3 +93,41 @@
     }
   }
 }
+
+/* Add Shepherd.js tour styles */
+@layer components {
+    .shepherd-element {
+        @apply bg-card text-card-foreground rounded-lg shadow-xl;
+        max-width: 400px;
+    }
+
+    .shepherd-header {
+        @apply bg-muted p-4 rounded-t-lg;
+    }
+
+    .shepherd-title {
+        @apply text-lg font-semibold font-headline text-foreground;
+    }
+
+    .shepherd-cancel-icon {
+        @apply text-muted-foreground hover:text-foreground;
+    }
+
+    .shepherd-text {
+        @apply p-4 text-sm text-muted-foreground;
+    }
+
+    .shepherd-footer {
+        @apply p-4 flex justify-between items-center;
+    }
+    
+    .shepherd-button {
+        @apply inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+        @apply h-9 px-3;
+        @apply bg-primary text-primary-foreground hover:bg-primary/90;
+    }
+    
+    .shepherd-button.shepherd-button-secondary {
+        @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
+    }
+}

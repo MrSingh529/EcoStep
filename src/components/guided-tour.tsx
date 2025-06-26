@@ -1,106 +1,93 @@
-
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import Joyride, { Step, CallBackProps, STATUS } from 'react-joyride';
+import { useContext, useEffect, } from 'react';
+import { ShepherdTour, ShepherdTourContext } from 'react-shepherd';
 
-export function GuidedTour() {
-  const [run, setRun] = useState(false);
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-    const tourNeeded = localStorage.getItem('ecostep_guided_tour_needed');
-    if (tourNeeded === 'true') {
-      setTimeout(() => {
-        setRun(true);
-      }, 500);
-    }
-  }, []);
-
-  const steps: Step[] = [
+const steps = [
     {
-      content: <div className="text-center"><h2 className="text-2xl font-bold font-headline mb-2">Welcome to EcoStep!</h2><p>Let's take a quick tour of your dashboard.</p></div>,
-      locale: { skip: <strong aria-label="skip">Skip</strong> },
-      placement: 'center',
-      target: 'body',
+      id: 'intro',
+      title: 'Welcome to EcoStep!',
+      text: "Let's take a quick tour of your dashboard to get you started.",
+      buttons: [{ text: 'Skip', action: 'cancel', classes: 'shepherd-button-secondary' }, { text: 'Next', action: 'next' }]
     },
     {
-      target: '#tour-user-menu',
-      content: 'This is your user menu. You can manage your profile, give feedback, or log out from here.',
-      placement: 'bottom-end',
-      disableBeacon: true,
+      id: 'user-menu',
+      attachTo: { element: '#tour-user-menu', on: 'bottom' },
+      title: 'Your Profile',
+      text: 'This is your user menu. You can manage your profile, give feedback, or log out from here.',
+      buttons: [{ text: 'Back', action: 'back', classes: 'shepherd-button-secondary' }, { text: 'Next', action: 'next' }]
     },
     {
-      target: '#tour-gamification-status',
-      content: 'Here you can track your Level, XP, and Daily Streak. Earn points by logging activities!',
-      placement: 'bottom',
+      id: 'gamification',
+      attachTo: { element: '#tour-gamification-status', on: 'bottom' },
+      title: 'Your Status',
+      text: 'Here you can track your Level, XP, and Daily Streak. Earn points by logging activities!',
+      buttons: [{ text: 'Back', action: 'back', classes: 'shepherd-button-secondary' }, { text: 'Next', action: 'next' }]
     },
     {
-      target: '#tour-impact-cards',
-      content: 'These cards give you a quick overview of your carbon footprint based on the time filter you select.',
-      placement: 'bottom',
+      id: 'impact-cards',
+      attachTo: { element: '#tour-impact-cards', on: 'bottom' },
+      title: 'Impact Overview',
+      text: 'These cards give you a quick overview of your carbon footprint based on the time filter you select.',
+      buttons: [{ text: 'Back', action: 'back', classes: 'shepherd-button-secondary' }, { text: 'Next', action: 'next' }]
     },
     {
-      target: '#tour-dashboard-charts',
-      content: 'Dive deeper with these charts showing your impact breakdown and progress over time.',
-      placement: 'top',
+      id: 'charts',
+      attachTo: { element: '#tour-dashboard-charts', on: 'top' },
+      title: 'Detailed Charts',
+      text: 'Dive deeper with these charts showing your impact breakdown and progress over time.',
+      buttons: [{ text: 'Back', action: 'back', classes: 'shepherd-button-secondary' }, { text: 'Next', action: 'next' }]
     },
     {
-      target: '#tour-activities-link',
-      content: 'When you\'re ready, head over to the Activities page to log your daily data and see your impact.',
-      placement: 'bottom',
+      id: 'activities',
+      attachTo: { element: '#tour-activities-link', on: 'bottom' },
+      title: 'Log Your Activities',
+      text: "When you're ready, head over to the Activities page to log your daily data and see your impact.",
+      buttons: [{ text: 'Back', action: 'back', classes: 'shepherd-button-secondary' }, { text: 'Next', action: 'next' }]
     },
     {
-      content: <div className="text-center"><h2 className="text-2xl font-bold font-headline mb-2">You're All Set!</h2><p>Enjoy exploring the app and start making a positive impact on the planet.</p></div>,
-      locale: { last: 'Finish' },
-      placement: 'center',
-      target: 'body',
+      id: 'finish',
+      title: "You're All Set!",
+      text: 'Enjoy exploring the app and start making a positive impact on the planet.',
+      buttons: [{ text: 'Finish', action: 'complete'}]
     },
-  ];
+];
 
-  const handleJoyrideCallback = useCallback((data: CallBackProps) => {
-    const { status } = data;
-    const finishedStatuses: string[] = [STATUS.FINISHED, STATUS.SKIPPED];
+const tourOptions = {
+    defaultStepOptions: {
+      cancelIcon: {
+        enabled: true
+      },
+      classes: 'shadow-md bg-popover',
+      scrollTo: { behavior: 'smooth', block: 'center' }
+    },
+    useModalOverlay: true
+};
 
-    if (finishedStatuses.includes(status)) {
-      setRun(false);
-      localStorage.setItem('ecostep_guided_tour_needed', 'false');
-    }
-  }, []);
+function TourInstance() {
+    const tour = useContext(ShepherdTourContext);
 
-  if (!isClient) return null;
-
-  return (
-    <Joyride
-      steps={steps}
-      run={run}
-      continuous
-      showProgress
-      showSkipButton
-      callback={handleJoyrideCallback}
-      styles={{
-        options: {
-          zIndex: 10000,
-          primaryColor: 'hsl(var(--primary))',
-          textColor: 'hsl(var(--foreground))',
-          backgroundColor: 'hsl(var(--background))',
-          arrowColor: 'hsl(var(--background))',
-        },
-        buttonClose: {
-            display: 'none',
-        },
-        tooltip: {
-            borderRadius: 'var(--radius)',
-        },
-        buttonNext: {
-            borderRadius: 'calc(var(--radius) - 4px)',
-            backgroundColor: 'hsl(var(--primary))',
-        },
-        buttonBack: {
-            borderRadius: 'calc(var(--radius) - 4px)',
+    useEffect(() => {
+        const tourNeeded = localStorage.getItem('ecostep_guided_tour_needed');
+        if (tourNeeded === 'true' && tour) {
+            // Use a timeout to ensure all elements are rendered
+            setTimeout(() => {
+                tour.start();
+                tour.on('complete', () => localStorage.setItem('ecostep_guided_tour_needed', 'false'));
+                tour.on('cancel', () => localStorage.setItem('ecostep_guided_tour_needed', 'false'));
+            }, 500);
         }
-      }}
-    />
-  );
+    }, [tour]);
+    
+    return null;
+}
+
+
+export function GuidedTourProvider({ children }: { children: React.ReactNode }) {
+    return (
+        <ShepherdTour steps={steps} tourOptions={tourOptions}>
+            {children}
+            <TourInstance />
+        </ShepherdTour>
+    )
 }
