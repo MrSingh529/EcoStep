@@ -1,6 +1,4 @@
 
-'use client';
-
 import { Milestones } from "./components/milestones";
 import { DailyQuote } from "./components/daily-quote";
 import { ActivityStatus } from "./components/activity-status";
@@ -9,12 +7,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { GamificationStatus } from "./components/gamification-status";
 import { JoinedChallenges } from "./components/joined-challenges";
 import { DashboardContainer } from "./components/dashboard-container";
-import dynamic from "next/dynamic";
-
-const GuidedTour = dynamic(
-  () => import('@/components/guided-tour').then((mod) => mod.GuidedTour),
-  { ssr: false }
-);
 
 function QuoteSkeleton() {
   return (
@@ -28,7 +20,6 @@ function QuoteSkeleton() {
 export default function DashboardPage() {
   return (
     <>
-      <GuidedTour />
       <div className="space-y-8">
         <div>
           <h1 className="text-4xl font-extrabold tracking-tight font-headline">

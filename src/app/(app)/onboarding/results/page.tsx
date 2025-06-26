@@ -75,9 +75,6 @@ export default function OnboardingResultsPage() {
                             asChild 
                             size="lg" 
                             className="w-full mt-4"
-                            onClick={() => {
-                                localStorage.setItem('ecostep_guided_tour_needed', 'true');
-                            }}
                         >
                             <Link href="/dashboard">Start My Journey</Link>
                         </Button>
