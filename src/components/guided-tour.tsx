@@ -2,12 +2,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
-import dynamic from 'next/dynamic';
-import type { Step, CallBackProps } from 'react-joyride';
-import { STATUS } from 'react-joyride';
-
-// Dynamically import Joyride only on the client side
-const Joyride = dynamic(() => import('react-joyride'), { ssr: false });
+import Joyride, { Step, CallBackProps, STATUS } from 'react-joyride';
 
 export function GuidedTour() {
   const [run, setRun] = useState(false);
@@ -17,7 +12,6 @@ export function GuidedTour() {
     setIsClient(true);
     const tourNeeded = localStorage.getItem('ecostep_guided_tour_needed');
     if (tourNeeded === 'true') {
-      // Use a small timeout to ensure the dashboard elements are mounted
       setTimeout(() => {
         setRun(true);
       }, 500);
@@ -75,7 +69,6 @@ export function GuidedTour() {
     }
   }, []);
 
-  // Only render Joyride on the client
   if (!isClient) return null;
 
   return (
