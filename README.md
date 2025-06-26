@@ -1,7 +1,7 @@
 # EcoStep: Understand and Reduce Your Environmental Impact
 
 <p align="center">
-  <img src="https://placehold.co/1200x630.png" alt="EcoStep App Screenshot"/>
+  <img src="./Screenshot_EcoStep.png" alt="EcoStep App Screenshot"/>
 </p>
 
 **EcoStep** is a modern, AI-powered web app that empowers you to track, understand, and reduce your carbon footprint. Log your daily activities, discover personalized sustainability tips, and join a global community making a real difference for the planet.
