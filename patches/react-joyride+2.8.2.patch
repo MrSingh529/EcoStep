@@ -1,33 +1,30 @@
 --- a/node_modules/react-joyride/dist/index.mjs
 +++ b/node_modules/react-joyride/dist/index.mjs
-@@ -1,7 +1,6 @@
--import ReactDOM from 'react-dom';
- import React, { useReducer, useEffect, useMemo, useCallback, useRef, useState } from 'react';
--import { unmountComponentAtNode, unstable_renderSubtreeIntoContainer } from 'react-dom';
-+import { createRoot } from 'react-dom/client';
- import PropTypes from 'prop-types';
- import { Animate } from 'react-simple-animate';
- import Scroll from 'react-scroll';
-@@ -213,20 +212,11 @@
-   }, [props.run]);
-   var renderPortal = useCallback(function (portal) {
-     if (!isMounted.current) return;
--    unstable_renderSubtreeIntoContainer(instance, portal, portalTarget.current, function () {
--      var hasListeners = addListener(this);
--
--      if (!hasListeners) {
--        addListener(this);
--      }
--    });
-+    createRoot(portalTarget.current).render(portal);
-   }, [instance]);
-   var unmountPortal = useCallback(function () {
-     if (!portalTarget.current) {
-       return;
+@@ -1,7 +1,7 @@
+ import e, { memo as t, forwardRef as n, useState as r, useReducer as o, useMemo as i, useEffect as s, useLayoutEffect as c, useCallback as l } from "react";
+-import a, { findDOMNode as u, unmountComponentAtNode as p, unstable_renderSubtreeIntoContainer as d } from "react-dom";
++import { findDOMNode as u } from "react-dom";
++import { createRoot as d } from "react-dom/client";
+ import { S as m, T as f, C as g, a as h, b as y, P as v, R as b, I as w, d as E, O as S, E as C, _ as x } from "./_commonjsHelpers-B86b14d8.js";
+ import k from "is-mobile";
+ import { S as T } from "./scroll-B1n6gH4w.js";
+@@ -482,14 +482,16 @@
+       this.tooltip = document.createElement("div"), this.tooltip.className = "joyride-portal", document.body.appendChild(this.tooltip), this.renderTooltip();
      }
--
--    unmountComponentAtNode(portalTarget.current);
-+    createRoot(portalTarget.current).unmount();
-   }, []);
-   useEffect(function () {
-     if (!portalTarget.current) {
+     componentDidUpdate() {
+-      this.renderTooltip();
++      this.renderTooltip();  
+     }
+     componentWillUnmount() {
+-      p(this.tooltip), document.body.contains(this.tooltip) && document.body.removeChild(this.tooltip);
++      this.root.unmount(), document.body.contains(this.tooltip) && document.body.removeChild(this.tooltip);
+     }
+     renderTooltip() {
+       const { children: e, ...t } = this.props, n = e;
+-      d(n, this.tooltip);
++      this.root ? this.root.render(n) : this.root = d(this.tooltip, {
++        onRecoverableError: () => {}
++      }), this.root.render(n)
+     }
+     render() {
+       return null;
