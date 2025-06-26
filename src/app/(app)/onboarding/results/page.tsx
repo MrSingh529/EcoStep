@@ -36,7 +36,7 @@ export default function OnboardingResultsPage() {
 
     if (isLoading) {
         return (
-             <div className="flex min-h-screen flex-col items-center justify-center p-4">
+             <div className="flex min-h-screen flex-col items-center justify-center p-4 animated-gradient-background">
                 <div className="mx-auto w-full max-w-md text-center">
                     <Skeleton className="h-10 w-48 mx-auto mb-4" />
                     <Skeleton className="h-4 w-full mb-6" />
@@ -48,7 +48,7 @@ export default function OnboardingResultsPage() {
     }
 
     return (
-        <div className="flex min-h-screen flex-col items-center justify-center p-4">
+        <div className="flex min-h-screen flex-col items-center justify-center p-4 animated-gradient-background">
             <div className="mx-auto w-full max-w-md text-center">
                 <Card>
                     <CardHeader>

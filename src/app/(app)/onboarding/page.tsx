@@ -73,11 +73,11 @@ const fullSchema = z.object({
     displayName: z.string().min(2, "Name must be at least 2 characters."),
     country: z.string().min(2, "Please enter your country."),
     avatarId: z.string({ required_error: "Please select an avatar." }),
-    flights: z.string().nonempty({ message: "Please select an option." }),
-    carTravel: z.string().nonempty({ message: "Please select an option." }),
-    diet: z.string().nonempty({ message: "Please select an option." }),
-    energyUsage: z.string().nonempty({ message: "Please select an option." }),
-    onlineShopping: z.string().nonempty({ message: "Please select an option." }),
+    flights: z.string({ required_error: "Please select an option." }),
+    carTravel: z.string({ required_error: "Please select an option." }),
+    diet: z.string({ required_error: "Please select an option." }),
+    energyUsage: z.string({ required_error: "Please select an option." }),
+    onlineShopping: z.string({ required_error: "Please select an option." }),
 });
 
 type OnboardingFormValues = z.infer<typeof fullSchema>;
@@ -94,7 +94,6 @@ export default function OnboardingPage() {
       displayName: user?.displayName || "",
       country: user?.country || "",
       avatarId: user?.avatarId || "sprout",
-      flights: "", carTravel: "", diet: "", energyUsage: "", onlineShopping: "",
     },
   });
 
@@ -148,7 +147,7 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center p-4 animated-gradient-background">
       <div className="mx-auto w-full max-w-3xl">
         <div className="flex flex-col items-center gap-2 text-center mb-8">
           <Icons.logo className="h-12 w-12 text-primary" />
