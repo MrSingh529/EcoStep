@@ -1,3 +1,4 @@
+
 "use client";
 
 import { ArrowDownRight, ArrowUpRight, Calendar, CalendarDays, Footprints, ShieldCheck } from "lucide-react";
@@ -130,7 +131,7 @@ export function ImpactSummaryCards({ activities }: ImpactSummaryCardsProps) {
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div id="tour-impact-cards" className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       {summaryData.map((item) => {
         const Icon = item.icon;
         const isNegative = item.changeType === "negative";

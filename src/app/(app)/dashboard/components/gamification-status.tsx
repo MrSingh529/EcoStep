@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useAuth } from "@/hooks/use-auth";
@@ -51,7 +52,7 @@ export function GamificationStatus() {
     ]
 
     return (
-        <div>
+        <div id="tour-gamification-status">
              <h2 className="text-2xl font-bold tracking-tight font-headline mb-4">
                 Your Status
             </h2>

@@ -59,6 +59,7 @@ export function Header() {
       return (
         <Button
           key={item.href}
+          id={item.href === '/activities' && !isMobile ? 'tour-activities-link' : undefined}
           variant={isActive ? "secondary" : "ghost"}
           asChild
           className={cn(
@@ -82,7 +83,7 @@ export function Header() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                <Button id="tour-user-menu" variant="ghost" className="relative h-10 w-10 rounded-full">
                     <Avatar className="h-10 w-10">
                         {AvatarComponent ? (
                             <AvatarComponent />

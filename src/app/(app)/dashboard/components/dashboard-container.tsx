@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
@@ -64,7 +65,7 @@ export function DashboardContainer() {
             
             <ImpactSummaryCards activities={filteredActivities} />
             
-            <div className="grid lg:grid-cols-2 gap-8">
+            <div id="tour-dashboard-charts" className="grid lg:grid-cols-2 gap-8">
                 <OverviewChart activities={filteredActivities} />
                 <ProgressChart activities={filteredActivities} />
             </div>

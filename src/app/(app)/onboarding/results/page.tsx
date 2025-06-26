@@ -71,7 +71,14 @@ export default function OnboardingResultsPage() {
                         </div>
                         <p className="font-semibold">kg CO₂e</p>
                         <p className="text-muted-foreground pt-4">This is your starting line. With EcoStep, you now have the tools and insights to watch this number shrink. Every small step makes a world of difference.</p>
-                        <Button asChild size="lg" className="w-full mt-4">
+                        <Button 
+                            asChild 
+                            size="lg" 
+                            className="w-full mt-4"
+                            onClick={() => {
+                                localStorage.setItem('ecostep_guided_tour_needed', 'true');
+                            }}
+                        >
                             <Link href="/dashboard">Start My Journey</Link>
                         </Button>
                     </CardContent>
