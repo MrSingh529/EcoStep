@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useContext, useEffect, } from 'react';
@@ -49,7 +50,7 @@ const steps = [
       id: 'finish',
       title: "You're All Set!",
       text: 'Enjoy exploring the app and start making a positive impact on the planet.',
-      buttons: [{ text: 'Finish', action: 'complete'}]
+      buttons: [{ text: 'Finish', action: 'next'}]
     },
 ];
 
