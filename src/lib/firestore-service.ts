@@ -1,6 +1,6 @@
 
 import { db } from '@/lib/firebase';
-import { collection, addDoc, getDocs, query, orderBy, Timestamp, doc, getDoc, setDoc, updateDoc, writeBatch, limit, arrayUnion } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, orderBy, Timestamp, doc, getDoc, setDoc, updateDoc, writeBatch, limit, arrayUnion, where } from 'firebase/firestore';
 import { differenceInCalendarDays } from 'date-fns';
 import type { ActivityData } from '@/lib/calculations';
 
@@ -190,7 +190,7 @@ export async function getLeaderboardUsers(): Promise<UserProfile[]> {
     throw new Error('Firestore not initialized');
   }
   const usersCol = collection(db, 'users');
-  const q = query(usersCol, orderBy('xp', 'desc'), limit(5));
+  const q = query(usersCol, where('xp', '>', 0), orderBy('xp', 'desc'), limit(5));
   const snapshot = await getDocs(q);
 
   if (snapshot.empty) {
