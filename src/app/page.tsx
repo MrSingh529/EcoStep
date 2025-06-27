@@ -26,7 +26,7 @@ export default function LandingPage() {
               Understand and Reduce Your Environmental Impact
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto lg:mx-0">
-              EcoStep helps you track your carbon footprint, discover personalized tips, and make a positive change for the planet. Start your journey to a more sustainable lifestyle today.
+              EcoStep makes it easy to track your carbon footprint, discover personalized eco-tips, and make a positive change for the planet. Start your journey to a more sustainable lifestyle today.
             </p>
             <Button asChild size="lg">
               <Link href="/dashboard">Start Tracking Now</Link>

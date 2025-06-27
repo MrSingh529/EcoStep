@@ -1,73 +1,73 @@
 # EcoStep: Understand and Reduce Your Environmental Impact
 
 <p align="center">
-  <img src="./Screenshot_EcoStep.png" alt="EcoStep App Screenshot"/>
+  <img src="./Screenshot_EcoStep.png" alt="EcoStep App Banner" data-ai-hint="nature app"/>
 </p>
 
-**EcoStep** is a modern, AI-powered web app that empowers you to track, understand, and reduce your carbon footprint. Log your daily activities, discover personalized sustainability tips, and join a global community making a real difference for the planet.
+**EcoStep** is a modern, AI-powered web application designed to help environmentally conscious individuals understand, track, and reduce their carbon footprint. By logging daily activities across various categories, users gain valuable insights into their environmental impact through rich visualizations and personalized, actionable recommendations.
 
-## 🌱 Key Features
+## ✨ Features In-Depth
 
-### 📊 Interactive Dashboard
-- **Impact Summary:** Instantly see your carbon footprint and progress.
-- **Gamification:** Level up, earn XP, and keep your streak going.
-- **Visual Insights:** Beautiful charts and milestone tracking.
-- **Community Challenges:** Unlock achievements and join global eco-goals.
+EcoStep is packed with features to make sustainability engaging, data-driven, and achievable.
 
-### ✍️ Simple Activity Logging
-- **Quick Entries:** Log activities in Transport, Energy, Waste, Water, and Food.
-- **Instant Feedback:** See your impact as you log.
+### 1. 📊 Interactive Dashboard
+The dashboard is the user's central hub, providing a comprehensive overview at a glance.
+- **Impact Summary Cards:** Key metrics like "Today's Footprint," "Weekly Footprint," and potential CO2e savings are displayed prominently.
+- **Gamification Status:** Tracks user level, XP progress, and their current daily login streak.
+- **Impact Charts:**
+  - **Overview Chart:** A bar chart breaking down the estimated monthly footprint by category.
+  - **Progress Chart:** A line chart showing the user's total footprint over time, visualizing their progress.
+- **Milestones & Challenges:** Displays unlocked achievements and active community challenges the user has joined.
+- **Daily Quote:** An AI-generated inspirational quote to keep users motivated.
 
-### 🤖 AI Sustainability Hub
-- **Personal Eco-Tips:** Get custom AI advice for greener living.
-- **Product Analyzer:** Instantly check the eco-score of any product.
-- **Eco-Recipe Generator:** AI-powered recipes tailored to your diet and what you have.
-- **Learn:** Explore environmental topics in plain language.
-- **Local Tips:** Get recommendations specific to your country.
+### 2. ✍️ Activity & Impact Logging
+The core of the app, allowing users to quantify their daily habits.
+- **Categorized Logging:** Users can log data across five key areas: Transportation, Energy, Waste, Water, and Food.
+- **Intuitive Forms:** Uses sliders, radio buttons, and clear inputs to make data entry fast and easy.
+- **Dynamic Calculations:** The app instantly calculates the CO2e (carbon dioxide equivalent) for each entry, providing immediate feedback.
 
-### 🌍 Community & Gamification
-- **Leaderboards:** See how you rank among “Earth Guardians.”
-- **Collective Goals:** Join forces with the community for big challenges.
+### 3. 🤖 AI-Powered Toolkit (Powered by Genkit & Gemini)
+A suite of intelligent tools to guide users on their sustainability journey.
+- **Personalized Eco-Tips:** The AI analyzes a user's latest activity log and generates custom-tailored tips.
+- **AI Product Analyzer:** Users can enter a product name or upload a photo, and the AI will provide an eco-friendliness score, a summary, pros, cons, and sustainable alternatives.
+- **Eco-Recipe Generator:** Users can specify dietary needs and available ingredients to generate unique, low-impact recipes.
+- **Learn Section:** An educational corner with AI-generated articles on key environmental topics.
+- **Local Recommendations:** Get sustainability tips tailored to your country.
 
-### 👤 Personalized Accounts
-- **Secure Login:** Email/password accounts powered by Firebase.
-- **Onboarding:** Establish your carbon footprint baseline and track your improvement.
+### 4. 🌱 Eco Actions
+Discover a curated list of impactful, AI-recommended actions you can take to make a difference. Set personal goals for actions or mark them as complete to track your real-world progress.
 
-### 🎨 Modern, Friendly UI
-- **Mobile-First:** Beautiful on any device.
-- **Light/Dark Mode:** Choose your style.
-- **Unique Fonts:** EcoStep feels fresh and personal.
+### 5. 🌍 Community Hub & Gamification
+Features designed to make sustainability a collaborative and rewarding experience.
+- **Gamification Engine:**
+  - **XP & Levels:** Earn experience points for logging activities to level up.
+  - **Daily Streaks:** Stay motivated by logging consistently.
+  - **Milestones:** Unlock achievements for reaching key goals.
+- **Community Hub:**
+  - **Global Leaderboard:** A public leaderboard ranking the top "Earth Guardians" by their total XP.
+  - **Community Challenges:** Users can join collective goals to make a bigger impact together.
+
+### 6. 👤 Personalized Experience
+- **Guided Onboarding:** A multi-step questionnaire establishes a baseline carbon footprint for new users.
+- **Profile Management:** Users can update their display name, country, and choose from a selection of fun "Eco-Avatars".
+
+### 7. 🎨 Modern UI & UX
+A clean, modern, and user-friendly interface.
+- **Responsive Design:** A mobile-first layout that works beautifully on all devices.
+- **Dark/Light Mode:** A theme toggle allows users to choose their preferred mode for optimal readability.
+
+## 🛠️ Tech Stack
+
+This project is built with a modern, robust, and scalable tech stack:
+
+- **Framework:** [Next.js](https://nextjs.org/) (App Router)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **UI Components:** [ShadCN UI](https://ui.shadcn.com/)
+- **AI Integration:** [Genkit](https://firebase.google.com/docs/genkit) (with Google's Gemini models)
+- **Backend & Database:** [Firebase](https://firebase.google.com/) (Authentication & Firestore)
+- **Data Visualization:** [Recharts](https://recharts.org/)
+- **Form Management:** [React Hook Form](https://react-hook-form.com/) & [Zod](https://zod.dev/) for schema validation.
 
 ---
-
-## 🔗 Try EcoStep Now
-
-[**🌎 Launch EcoStep**](https://ecostepbysingh.vercel.app)  
-*Start tracking your footprint and making a difference today!*
-
----
-
-## 🛠️ Built With
-
-- [Next.js](https://nextjs.org/) (App Router)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [ShadCN UI](https://ui.shadcn.com/)
-- [Genkit AI](https://firebase.google.com/docs/genkit)
-- [Firebase](https://firebase.google.com/) (Auth & Firestore)
-- [Recharts](https://recharts.org/)
-- [React Hook Form](https://react-hook-form.com/) & [Zod](https://zod.dev/)
-
----
-
-## 🙌 Get Involved
-
-We welcome feedback, suggestions, and contributions!
-- [Open an issue](https://github.com/MrSingh529/EcoStep/issues) for bugs or feature requests  
-- [Star the repo](https://github.com/MrSingh529/ecostep) to support the project
-
----
-
-**EcoStep** – Sustainability, made simple, social, and fun!
-
----
+*Crafted with ❤️ by Harpinder Singh.*
