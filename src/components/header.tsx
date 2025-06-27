@@ -1,8 +1,7 @@
-
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   LayoutDashboard,
@@ -62,6 +61,7 @@ export function Header() {
   const pathname = usePathname();
   const { user, signOut } = useAuth();
   const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
+  const router = useRouter();
 
   const renderNavLinks = (isMobile = false) =>
     navItems.map((item) => {
@@ -197,18 +197,27 @@ export function Header() {
             </DialogTitle>
             <DialogDescription asChild>
                 <div className="text-left pt-4 space-y-4 text-base text-muted-foreground">
-                  <p>
-                      EcoStep was born from a simple, slightly panicked thought: "The world is facing huge climate challenges... what can someone like me even do?"
-                  </p>
-                  <p>
-                      I'm not a scientist or a policy maker. Honestly, I'm just a regular person who felt overwhelmed by the scale of the problem. But I believe that small, individual actions, when multiplied by millions, can create a ripple effect of massive change.
-                  </p>
-                  <p>
-                      So, I decided to build something. EcoStep is my answer. It's a tool to turn that feeling of helplessness into a sense of empowerment. It's for tracking the small steps—the bike ride instead of the drive, the reusable bag, the meatless meal—and seeing how they add up to a giant, positive impact.
-                  </p>
-                  <p className="font-semibold text-foreground/90">
-                      This app is proof that you don't need to be a tech guru to build something that matters. You just need a problem to solve and the passion to see it through. Thank you for being part of this journey.
-                  </p>
+                    <p>
+                        Working as an EA to a CEO, I got a front-row seat to how big, complex problems are solved. The key was always the same: break it down into smaller, measurable, and manageable steps.
+                    </p>
+                    <p>
+                        My experience in business process automation taught me the same lesson. To tackle a huge challenge, you find the right metrics, you track them consistently, and you make data-driven improvements.
+                    </p>
+                    <p>
+                        I realized the global issue of climate change could be approached the same way on a personal level. That feeling of being overwhelmed by the scale of the problem could be replaced by the clarity of a personal action plan.
+                    </p>
+                    <p>
+                        EcoStep is my attempt to build that plan. It's a tool to help us, as individuals, turn abstract goals into concrete actions and see the tangible results of our daily efforts. It's about empowering each of us with the data to make a difference, one step at a time.
+                    </p>
+                     <p className="font-semibold text-foreground/90">
+                        Thank you for being part of this journey.
+                    </p>
+                   <p className="pt-4 mt-4 border-t border-border/50 text-sm">
+                      This web app is still in development, and I'm running everything solo. If you face any bugs or have ideas for new features, please{' '}
+                      <Link href="/feedback" onClick={() => setIsAboutDialogOpen(false)} className="font-semibold text-primary underline-offset-4 hover:underline">
+                        submit your feedback
+                      </Link>. It would help a lot!
+                    </p>
                 </div>
             </DialogDescription>
           </DialogHeader>
