@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { GamificationStatus } from "./components/gamification-status";
 import { JoinedChallenges } from "./components/joined-challenges";
 import { DashboardContainer } from "./components/dashboard-container";
+import { GettingStartedChecklist } from "./components/getting-started-checklist";
 
 function QuoteSkeleton() {
   return (
@@ -30,6 +31,8 @@ export default function DashboardPage() {
         </p>
       </div>
       
+      <GettingStartedChecklist />
+
       <GamificationStatus />
 
       <DashboardContainer />

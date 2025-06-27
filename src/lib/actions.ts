@@ -18,7 +18,7 @@ export async function getEcoTipsAction(input: GenerateEcoTipsInput) {
     const result = await generateEcoTips(input);
     return { success: true, tips: result.tips };
   } catch (error) {
-    console.error(error);
+    console.error("Error in getEcoTipsAction:", error);
     return { success: false, error: "Failed to generate tips. Please try again." };
   }
 }
@@ -28,7 +28,7 @@ export async function analyzeProductAction(input: AnalyzeProductInput) {
         const result = await analyzeProduct(input);
         return { success: true, analysis: result };
     } catch (error) {
-        console.error(error);
+        console.error("Error in analyzeProductAction:", error);
         return { success: false, error: "Failed to analyze product. The AI model may be unavailable. Please try again later." };
     }
 }
@@ -38,7 +38,7 @@ export async function getEcoActionsAction() {
     const result = await generateEcoActions();
     return { success: true, actions: result.actions };
   } catch (error) {
-    console.error(error);
+    console.error("Error in getEcoActionsAction:", error);
     return { success: false, error: "Failed to generate actions. Please try again." };
   }
 }
@@ -48,7 +48,7 @@ export async function getDailyQuoteAction() {
     const result = await generateQuote();
     return { success: true, quote: result };
   } catch (error) {
-    console.error(error);
+    console.error("Error in getDailyQuoteAction:", error);
     return { success: false, error: "Failed to generate a quote. Please try again." };
   }
 }
@@ -58,7 +58,7 @@ export async function generateRecipeAction(input: GenerateRecipeInput) {
         const result = await generateRecipe(input);
         return { success: true, recipe: result };
     } catch (error) {
-        console.error(error);
+        console.error("Error in generateRecipeAction:", error);
         return { success: false, error: "Failed to generate recipe. Please try again." };
     }
 }
@@ -68,7 +68,7 @@ export async function generateArticleAction(input: GenerateArticleInput) {
         const result = await generateArticle(input);
         return { success: true, article: result };
     } catch (error) {
-        console.error(error);
+        console.error("Error in generateArticleAction:", error);
         return { success: false, error: "Failed to generate article. Please try again." };
     }
 }
@@ -78,7 +78,7 @@ export async function generateLocalRecommendationsAction(input: GenerateLocalRec
         const result = await generateLocalRecommendations(input);
         return { success: true, recommendations: result.recommendations };
     } catch (error) {
-        console.error(error);
+        console.error("Error in generateLocalRecommendationsAction:", error);
         return { success: false, error: "Failed to generate recommendations. Please try again." };
     }
 }
