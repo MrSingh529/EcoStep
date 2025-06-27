@@ -86,7 +86,7 @@ export function Header() {
                 <Button id="tour-user-menu" variant="ghost" className="relative h-10 w-10 rounded-full">
                     <Avatar className="h-10 w-10">
                         {AvatarComponent ? (
-                            <AvatarComponent className="h-full w-full" />
+                            <AvatarComponent className="h-10 w-10" />
                         ) : (
                            <AvatarFallback>{user.displayName?.charAt(0).toUpperCase() || 'U'}</AvatarFallback>
                         )}
