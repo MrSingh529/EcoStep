@@ -1,8 +1,14 @@
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Lightbulb, Utensils, GraduationCap, MapPin, ChevronRight } from "lucide-react";
+import { Lightbulb, Utensils, GraduationCap, MapPin, ChevronRight, ScanLine } from "lucide-react";
 
 const features = [
+  {
+    icon: ScanLine,
+    title: "AI Product Analyzer",
+    description: "Scan a product's name or photo for an eco-impact score.",
+    href: "/analyzer",
+  },
   {
     icon: Lightbulb,
     title: "Personalized Tips",

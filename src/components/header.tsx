@@ -8,7 +8,6 @@ import {
   ListChecks,
   Menu,
   LogOut,
-  ScanLine,
   ClipboardCheck,
   User as UserIcon,
   MessageSquare,
@@ -52,7 +51,6 @@ const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/activities", label: "Activities", icon: ListChecks },
   { href: "/actions", label: "Actions", icon: ClipboardCheck },
-  { href: "/analyzer", label: "Analyzer", icon: ScanLine },
   { href: "/community", label: "Community", icon: Users },
   { href: "/ai-hub", label: "AI Hub", icon: BrainCircuit },
 ];
