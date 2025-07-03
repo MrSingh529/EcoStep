@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import { AuthProvider } from "@/hooks/use-auth";
+import { Analytics } from "@vercel/analytics/react";
 
 const fontBody = Inter({
   subsets: ["latin"],
@@ -20,7 +21,7 @@ const fontHeadline = Caveat({
 
 export const metadata: Metadata = {
   title: "EcoStep",
-  description: "Understand and Reduce Your Environmental Impact.",
+  description: "Small steps, giant impact. Track your carbon footprint and make a positive change for the planet with EcoStep.",
 };
 
 export default function RootLayout({
@@ -31,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={cn(fontBody.variable, fontHeadline.variable)}>
       <head />
-      <body className={cn("font-body antialiased")}>
+      <body>
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -58,6 +59,7 @@ export default function RootLayout({
             <Toaster />
           </AuthProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
