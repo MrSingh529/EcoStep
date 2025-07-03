@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -9,9 +10,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Coffee, Heart, Loader2, PartyPopper } from "lucide-react";
+import { Heart, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { SupportCard } from "@/components/support-card";
 
 const feedbackSchema = z.object({
     feedbackType: z.enum(["idea", "bug", "improvement", "other"], {
@@ -128,28 +130,7 @@ export function FeedbackForm() {
                 </Form>
             </div>
             <div className="space-y-8">
-                 <Card className="bg-gradient-to-br from-accent/50 to-transparent">
-                    <CardHeader>
-                        <div className="flex justify-center mb-2">
-                            <div className="p-3 rounded-full bg-background border shadow-sm">
-                               <PartyPopper className="h-8 w-8 text-primary" />
-                            </div>
-                        </div>
-                        <CardTitle className="text-center">Enjoying EcoStep?</CardTitle>
-                        <CardDescription className="text-center">
-                            If you find this app helpful, consider supporting its development. Your contribution helps keep the servers running and new features coming!
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Button asChild className="w-full">
-                            {/* Make sure to replace this with your actual "Buy Me A Coffee" link */}
-                            <a href="https://coff.ee/mrsingh529" target="_blank" rel="noopener noreferrer">
-                                <Coffee className="mr-2 h-4 w-4" />
-                                Buy me a Coffee
-                            </a>
-                        </Button>
-                    </CardContent>
-                </Card>
+                <SupportCard />
             </div>
         </div>
     );

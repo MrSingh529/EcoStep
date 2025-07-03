@@ -1,5 +1,7 @@
+
 import { ProfileForm } from "./components/profile-form";
 import { ContactCard } from "./components/contact-card";
+import { SupportCard } from "@/components/support-card";
 
 export default function ProfilePage() {
   return (
@@ -18,6 +20,7 @@ export default function ProfilePage() {
             <ProfileForm />
         </div>
         <div className="space-y-8">
+            <SupportCard />
             <ContactCard />
         </div>
       </div>
