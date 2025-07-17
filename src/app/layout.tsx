@@ -22,6 +22,7 @@ const fontHeadline = Caveat({
 export const metadata: Metadata = {
   title: "EcoStep",
   description: "Small steps, giant impact. Track your carbon footprint and make a positive change for the planet with EcoStep.",
+  manifest: "/manifest.ts",
 };
 
 export default function RootLayout({
@@ -33,21 +34,6 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={cn(fontBody.variable, fontHeadline.variable)}>
       <head />
       <body>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                  for(let registration of registrations) {
-                    registration.unregister();
-                  }
-                }).catch(function(err) {
-                  console.log('Service Worker unregistration failed: ', err);
-                });
-              }
-            `,
-          }}
-        />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
