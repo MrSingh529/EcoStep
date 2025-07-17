@@ -9,6 +9,7 @@ import { GamificationStatus } from "./components/gamification-status";
 import { JoinedChallenges } from "./components/joined-challenges";
 import { DashboardContainer } from "./components/dashboard-container";
 import { GettingStartedChecklist } from "./components/getting-started-checklist";
+import { GuidedTour } from "@/components/guided-tour";
 
 function QuoteSkeleton() {
   return (
@@ -21,31 +22,34 @@ function QuoteSkeleton() {
 
 export default function DashboardPage() {
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-4xl font-extrabold tracking-tight font-headline">
-          Hello, Earth Guardian!
-        </h1>
-        <p className="text-lg text-muted-foreground mt-2">
-          Welcome back! Your positive impact is making a world of difference.
-        </p>
+    <>
+      <GuidedTour />
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-4xl font-extrabold tracking-tight font-headline">
+            Hello, Earth Guardian!
+          </h1>
+          <p className="text-lg text-muted-foreground mt-2">
+            Welcome back! Your positive impact is making a world of difference.
+          </p>
+        </div>
+        
+        <GettingStartedChecklist />
+
+        <GamificationStatus />
+
+        <DashboardContainer />
+
+        <ActivityStatus />
+        
+        <JoinedChallenges />
+
+        <Milestones />
+
+        <Suspense fallback={<QuoteSkeleton />}>
+          <DailyQuote />
+        </Suspense>
       </div>
-      
-      <GettingStartedChecklist />
-
-      <GamificationStatus />
-
-      <DashboardContainer />
-
-      <ActivityStatus />
-      
-      <JoinedChallenges />
-
-      <Milestones />
-
-      <Suspense fallback={<QuoteSkeleton />}>
-        <DailyQuote />
-      </Suspense>
-    </div>
+    </>
   );
 }

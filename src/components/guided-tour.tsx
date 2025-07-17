@@ -1,158 +1,86 @@
 "use client";
 
-import { useContext, useEffect } from 'react';
-import { ShepherdTour, ShepherdTourContext } from 'react-shepherd';
-import type Shepherd from 'shepherd.js';
+import { useState, useEffect } from "react";
+import Joyride, { Step, CallBackProps } from "react-joyride";
+import { useTheme } from "next-themes";
+import { useAuth } from "@/hooks/use-auth";
 
-const steps = [
-    {
-      id: 'intro',
-      title: 'Welcome to EcoStep!',
-      text: "Let's take a quick tour of your dashboard to get you started.",
-      buttons: [
-        { 
-            text: 'Skip', 
-            action(step: any) { return step.cancel(); },
-            classes: 'shepherd-button-secondary' 
-        }, 
-        { 
-            text: 'Next', 
-            action(step: any) { return step.next(); }
-        }
-      ]
-    },
-    {
-      id: 'user-menu',
-      attachTo: { element: '#tour-user-menu', on: 'bottom' },
-      title: 'Your Profile',
-      text: 'This is your user menu. You can manage your profile, give feedback, or log out from here.',
-      buttons: [
-        { 
-            text: 'Back', 
-            action(step: any) { return step.back(); }, 
-            classes: 'shepherd-button-secondary' 
-        }, 
-        { 
-            text: 'Next', 
-            action(step: any) { return step.next(); }
-        }
-      ]
-    },
-    {
-      id: 'gamification',
-      attachTo: { element: '#tour-gamification-status', on: 'bottom' },
-      title: 'Your Status',
-      text: 'Here you can track your Level, XP, and Daily Streak. Earn points by logging activities!',
-      buttons: [
-        { 
-            text: 'Back', 
-            action(step: any) { return step.back(); },
-            classes: 'shepherd-button-secondary' 
-        }, 
-        { 
-            text: 'Next', 
-            action(step: any) { return step.next(); }
-        }
-      ]
-    },
-    {
-      id: 'impact-cards',
-      attachTo: { element: '#tour-impact-cards', on: 'bottom' },
-      title: 'Impact Overview',
-      text: 'These cards give you a quick overview of your carbon footprint based on the time filter you select.',
-      buttons: [
-        { 
-            text: 'Back', 
-            action(step: any) { return step.back(); },
-            classes: 'shepherd-button-secondary' 
-        }, 
-        { 
-            text: 'Next', 
-            action(step: any) { return step.next(); }
-        }
-      ]
-    },
-    {
-      id: 'charts',
-      attachTo: { element: '#tour-dashboard-charts', on: 'top' },
-      title: 'Detailed Charts',
-      text: 'Dive deeper with these charts showing your impact breakdown and progress over time.',
-      buttons: [
-        { 
-            text: 'Back', 
-            action(step: any) { return step.back(); },
-            classes: 'shepherd-button-secondary' 
-        }, 
-        { 
-            text: 'Next', 
-            action(step: any) { return step.next(); }
-        }
-      ]
-    },
-    {
-      id: 'activities',
-      attachTo: { element: '#tour-activities-link', on: 'bottom' },
-      title: 'Log Your Activities',
-      text: "When you're ready, head over to the Activities page to log your daily data and see your impact.",
-      buttons: [
-        { 
-            text: 'Back', 
-            action(step: any) { return step.back(); },
-            classes: 'shepherd-button-secondary' 
-        }, 
-        { 
-            text: 'Next', 
-            action(step: any) { return step.next(); }
-        }
-      ]
-    },
-    {
-      id: 'finish',
-      title: "You're All Set!",
-      text: 'Enjoy exploring the app and start making a positive impact on the planet.',
-      buttons: [
-        { 
-            text: 'Finish', 
-            action(step: any) { return step.next(); }
-        }
-      ]
-    },
-];
+const TOUR_COMPLETED_KEY = "ecostep-tour-completed";
 
-const tourOptions = {
-    defaultStepOptions: {
-      cancelIcon: {
-        enabled: true
-      },
-      classes: 'shadow-md bg-popover',
-      scrollTo: { behavior: 'smooth', block: 'center' }
-    },
-    useModalOverlay: true
-};
-
-function TourInstance() {
-    // 👇 The important fix:
-    const tour = useContext(ShepherdTourContext) as Shepherd.Tour | null;
+export const GuidedTour = () => {
+    const { user } = useAuth();
+    const [run, setRun] = useState(false);
+    const { theme } = useTheme();
 
     useEffect(() => {
-        const tourNeeded = localStorage.getItem('ecostep_guided_tour_needed');
-        if (tourNeeded === 'true' && tour) {
-            setTimeout(() => {
-                tour.start();
-                tour.on('complete', () => localStorage.setItem('ecostep_guided_tour_needed', 'false'));
-                tour.on('cancel', () => localStorage.setItem('ecostep_guided_tour_needed', 'false'));
-            }, 500);
+        const tourCompleted = localStorage.getItem(TOUR_COMPLETED_KEY);
+        // Run tour if it hasn't been completed and user has a low level (is new)
+        if (!tourCompleted && user && (user.level || 1) <= 1 && (user.xp || 0) < 50) {
+            setRun(true);
         }
-    }, [tour]);
-    
-    return null;
-}
+    }, [user]);
 
-export function GuidedTourProvider({ children }: { children: React.ReactNode }) {
+    const steps: Step[] = [
+        {
+            target: "#tour-gamification-status",
+            content: "This is your status panel. Here you can track your level, XP, and daily streak. The more you log, the more you progress!",
+            disableBeacon: true,
+        },
+        {
+            target: "#tour-impact-cards",
+            content: "These cards give you a quick summary of your environmental footprint. They update every time you log a new activity.",
+        },
+        {
+            target: "#tour-dashboard-charts",
+            content: "Here are more detailed charts. You can see a breakdown of your impact by category and track your progress over time.",
+        },
+        {
+            target: "#tour-activities-link",
+            content: "Ready to start? Click here to log your first activity and see how it affects your numbers!",
+            placement: 'right'
+        },
+        {
+            target: "#tour-user-menu",
+            content: "You can always access your profile, provide feedback, or learn more about the app from this menu.",
+        },
+    ];
+
+    const handleJoyrideCallback = (data: CallBackProps) => {
+        const { status } = data;
+        const finishedStatuses: string[] = ["finished", "skipped"];
+
+        if (finishedStatuses.includes(status)) {
+            setRun(false);
+            localStorage.setItem(TOUR_COMPLETED_KEY, "true");
+        }
+    };
+    
+    // Don't render on the server or if run is false
+    if (typeof window === "undefined" || !run) {
+        return null;
+    }
+
     return (
-        <ShepherdTour steps={steps} tourOptions={tourOptions}>
-            {children}
-            <TourInstance />
-        </ShepherdTour>
-    )
-}
+        <Joyride
+            callback={handleJoyrideCallback}
+            continuous
+            run={run}
+            scrollToFirstStep
+            showProgress
+            showSkipButton
+            steps={steps}
+            styles={{
+                options: {
+                    arrowColor: theme === 'dark' ? '#1f2937' : '#ffffff',
+                    backgroundColor: theme === 'dark' ? '#1f2937' : '#ffffff',
+                    primaryColor: '#8FBC8F',
+                    textColor: theme === 'dark' ? '#f8fafc' : '#1e293b',
+                    zIndex: 1000,
+                },
+                 buttonClose: {
+                    display: 'none',
+                },
+            }}
+        />
+    );
+};
