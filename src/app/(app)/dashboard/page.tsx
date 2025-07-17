@@ -9,7 +9,6 @@ import { GamificationStatus } from "./components/gamification-status";
 import { JoinedChallenges } from "./components/joined-challenges";
 import { DashboardContainer } from "./components/dashboard-container";
 import { GettingStartedChecklist } from "./components/getting-started-checklist";
-import { GuidedTour } from "@/components/guided-tour";
 
 function QuoteSkeleton() {
   return (
@@ -23,7 +22,6 @@ function QuoteSkeleton() {
 export default function DashboardPage() {
   return (
     <>
-      <GuidedTour />
       <div className="space-y-8">
         <div>
           <h1 className="text-4xl font-extrabold tracking-tight font-headline">
