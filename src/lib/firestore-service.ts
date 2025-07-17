@@ -1,6 +1,6 @@
 
 import { db } from '@/lib/firebase';
-import { collection, addDoc, getDocs, query, orderBy, Timestamp, doc, getDoc, setDoc, updateDoc, writeBatch, limit, arrayUnion, where } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, orderBy, Timestamp, doc, getDoc, setDoc, updateDoc, writeBatch, limit, arrayUnion, where, deleteDoc } from 'firebase/firestore';
 import { differenceInCalendarDays } from 'date-fns';
 import type { ActivityData } from '@/lib/calculations';
 
@@ -212,4 +212,29 @@ export async function updateUserJoinedChallenges(userId: string, challengeId: st
     await updateDoc(userDocRef, {
         joinedChallenges: arrayUnion(challengeId)
     });
+}
+
+
+/**
+ * Deletes a user's profile and all their sub-collection data from Firestore.
+ * @param userId The ID of the user to delete.
+ */
+export async function deleteUserAndData(userId: string) {
+  if (!db) throw new Error("Firestore is not initialized.");
+
+  const batch = writeBatch(db);
+
+  // 1. Delete all documents in the 'activities' sub-collection
+  const activitiesCol = collection(db, 'users', userId, 'activities');
+  const activitiesSnapshot = await getDocs(activitiesCol);
+  activitiesSnapshot.forEach((doc) => {
+    batch.delete(doc.ref);
+  });
+
+  // 2. Delete the main user profile document
+  const userDocRef = doc(db, 'users', userId);
+  batch.delete(userDocRef);
+
+  // Commit the batch
+  await batch.commit();
 }

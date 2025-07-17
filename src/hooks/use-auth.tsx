@@ -12,10 +12,11 @@ import {
   signInWithEmailAndPassword,
   updateProfile,
   sendPasswordResetEmail,
+  deleteUser,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
-import { getUserProfile, setOrMergeUserProfile, updateUserProfile as updateUserProfileInDb, updateUserJoinedChallenges } from "@/lib/firestore-service";
+import { getUserProfile, setOrMergeUserProfile, updateUserProfile as updateUserProfileInDb, updateUserJoinedChallenges, deleteUserAndData } from "@/lib/firestore-service";
 
 // Extend the Firebase User type to include our custom fields
 export interface User extends FirebaseUser {
@@ -41,6 +42,7 @@ interface AuthContextType {
   signUpWithEmail: (email: string, password: string) => Promise<void>;
   sendPasswordReset: (email: string) => Promise<void>;
   signOut: () => Promise<void>;
+  deleteAccount: () => Promise<void>;
   updateUser: (data: Partial<User>) => Promise<void>;
   joinChallenge: (challengeId: string) => Promise<void>;
   isFirebaseConfigured: boolean;
@@ -144,6 +146,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error("Error signing out:", error);
     }
   };
+
+  const deleteAccount = async () => {
+    if (!user || !auth || !auth.currentUser) {
+      throw new Error("No user is signed in to delete.");
+    }
+
+    try {
+      // First, delete Firestore data
+      await deleteUserAndData(user.uid);
+      
+      // Then, delete the Auth user
+      await deleteUser(auth.currentUser);
+
+      // UI will update via onAuthStateChanged, which will set user to null
+      router.push('/login');
+    } catch (error: any) {
+      console.error("Error deleting account:", error);
+      if (error.code === 'auth/requires-recent-login') {
+        throw new Error("This is a sensitive operation and requires you to have logged in recently. Please sign out and sign back in to delete your account.");
+      }
+      throw new Error("An error occurred while deleting your account.");
+    }
+  };
   
   const updateUser = async (data: Partial<User>) => {
     if (!user || !auth) {
@@ -179,7 +204,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   }
 
-  const value = { user, isLoading, signInWithGoogle, signInWithEmail, signUpWithEmail, signOut, updateUser, joinChallenge, isFirebaseConfigured, sendPasswordReset };
+  const value = { user, isLoading, signInWithGoogle, signInWithEmail, signUpWithEmail, signOut, deleteAccount, updateUser, joinChallenge, isFirebaseConfigured, sendPasswordReset };
 
   return (
     <AuthContext.Provider value={value}>
